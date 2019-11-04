@@ -1,27 +1,27 @@
-import pyttsx3
+import pyttsx3 #text to speech
 import pygame
 import random
 import os
 pygame.mixer.init()
 pygame.init()
 
-#speak
+#Getting voices
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 
 engine.setProperty('voice', voices[0].id)
 
-# Colors
+# setting of Colors
 white = (255, 255, 255)
 red = (255, 0, 0)
 black = (0, 0, 0)
 green = (0,255,0)
-# Creating window
+# Creating window for Game
 screen_width = 900
 screen_height = 600
 gameWindow = pygame.display.set_mode((screen_width, screen_height))
 
-#Game images:-
+# Adding Game images:-
 GameBgPic = pygame.image.load("gbgimg.jpg") #game background screen
 GameOverPic = pygame.image.load("gameOverScreeen.jpg") #game over Sreen
 WelcomePic = pygame.image.load("WelcomeScreen.jpg")  #welcome screen
@@ -30,7 +30,7 @@ GameOverPic= pygame.transform.scale(GameOverPic,(screen_width, screen_height)).c
 WelcomePic= pygame.transform.scale(WelcomePic,(screen_width, screen_height)).convert_alpha()
 
 
-# Game Title
+# Creating Game Title
 pygame.display.set_caption("Snakes__With__Shivam")
 pygame.display.update()
 clock = pygame.time.Clock()
@@ -44,11 +44,12 @@ def plot_snake(gameWindow, color, snk_list, snake_size):
     for x,y in snk_list:
         pygame.draw.rect(gameWindow, color, [x, y, snake_size, snake_size])
 
+# writing speak function:
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
     
-
+# defining Welcome screen:
 def welcom():
     exit_game = False
     while not exit_game:
@@ -100,24 +101,22 @@ def gameloop():
             with open("hiscore.txt", "w") as f:
                 f.write(str(hiscore))
             gameWindow.fill(white)
-            gameWindow.blit(GameOverPic,(0,0))                                        # game over wallpaper--
+            gameWindow.blit(GameOverPic,(0,0)) # game over wallpaper--
             text_screen("Game Over! Press Enter To Continue", red, 100, 250)
-
+# setting arrow keys working:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit_game = True
-
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         welcom()
-
         else:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     exit_game = True
 
                 if event.type == pygame.KEYDOWN:
+
                     if event.key == pygame.K_RIGHT:
                         velocity_x = init_velocity
                         velocity_y = 0
@@ -136,7 +135,7 @@ def gameloop():
 
             snake_x = snake_x + velocity_x
             snake_y = snake_y + velocity_y
-
+#management of score:
             if abs(snake_x - food_x)<20 and abs(snake_y - food_y)<20:
                 score +=10
                 food_x = random.randint(20, screen_width / 2)
@@ -146,10 +145,9 @@ def gameloop():
                     hiscore = score
 
             gameWindow.fill(white)
-            gameWindow.blit(GameBgPic,(0,0))                                                #game bg wallpaper
+            gameWindow.blit(GameBgPic,(0,0)) #game background wallpaper
             text_screen("Score: " + str(score) + "  Hiscore: "+str(hiscore), red, 5, 5)
             pygame.draw.rect(gameWindow, red, [food_x, food_y, snake_size, snake_size])
-
 
             head = []
             head.append(snake_x)
